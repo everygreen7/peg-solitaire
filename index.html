@@ -197,7 +197,7 @@ function errText(e){return String((e&&e.message)||e).replace(/^Error:\s*/,'').re
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
 /* ═════════ 앱 상태 ═════════ */
-const A={name:null,token:null,bank:null,offset:0,state:{status:'idle'},me:null,round:null,game:null,mode:null,opts:{showSol:false},
+const A={name:null,token:null,bank:null,offset:0,state:{status:'idle'},me:null,round:null,game:null,mode:null,opts:{hint:false,all:false},
  busy:false,pollT:null,activity:'대기',doneP:{},map:[],mapBest:{},cls:0,real:{cur:0,saved:{},seen:{}}};
 
 /* ═════════ 입장 ═════════ */
@@ -226,7 +226,7 @@ async function poll(){
 }
 async function apply(r){
  const s=r.state;A.state=s;
- if(r.opts){const ch=A.opts.showSol!==r.opts.showSol;A.opts=r.opts;if(ch&&A.game==='play'&&G)drawCtrl()}
+ if(r.opts){const ch=A.opts.hint!==r.opts.hint||A.opts.all!==r.opts.all;A.opts=r.opts;if(ch&&A.game==='play'&&G&&G.opt.kind==='play'){drawCtrl();playNote()}}
  if(r.me&&!A.busy){A.me=r.me;if(A.game==='real'&&A.real.shownReach!==reachN())drawNums()}
  if(r.cls){A.cls=r.cls.pairs;$('mClass').textContent=A.cls}
  $('pauseOv').hidden=s.status!=='paused';
@@ -393,8 +393,8 @@ function drawCtrl(){
    `<button class="btn pri wide" id="bNext">${G.opt.idx===reachN()&&G.opt.idx<realList().length-1&&!isDone(G.opt.idx)?'넘어가기 → (다음 번호 열기)':'다음 문제 →'}</button>`}
  else{const ch=k==='map'||A.bank.play[G.opt.idx].choose;
   h+=(ch?`<button class="btn" id="bChoose">빈칸 바꾸기</button>`:'')+`<button class="btn${G.lab?' on':''}" id="bLab"${ch?'':' style="grid-column:span 2"'}>${L}</button>`;
-  if(k==='play'){const lk=A.opts.showSol||G.demo?'':' locked',lo=A.opts.showSol?'':'🔒 ';
-   h+=`<button class="btn${lk}" id="bH1" style="grid-column:span 2">${lo}💡 한 수 힌트</button><button class="btn${lk}" id="bAll" style="grid-column:span 2">${G.demo?'■ 멈추기':lo+'▶ 끝까지 보기'}</button>`}
+  if(k==='play'){const h1=A.opts.hint,al=A.opts.all||G.demo;
+   h+=`<button class="btn${h1?'':' locked'}" id="bH1" style="grid-column:span 2">${h1?'':'🔒 '}💡 한 수 힌트</button><button class="btn${al?'':' locked'}" id="bAll" style="grid-column:span 2">${G.demo?'■ 멈추기':(al?'':'🔒 ')+'▶ 끝까지 보기'}</button>`}
   if(k==='map'&&G.stuck)h+=`<button class="btn pri wide" id="bUp">📌 이 결과 올리기 · ${emptyHole()+1}번 비움, 남은 말 ${pegCount()}개</button>`}
  c.innerHTML=h;
  $('bUndo').onclick=undo;$('bReset').onclick=resetBoard;$('bLab').onclick=cycleLab;
@@ -417,17 +417,18 @@ function openPlay(i){
  newGame(p.board,p.pegs||null,{kind:'play',idx:i});
  setMsg(p.pegs?'말을 톡 누르면 뛰어넘어요. 말 1개만 남겨 봐요!':'처음 비울 칸을 하나 톡 눌러요.');
  drawCtrl();
- $('gnote').textContent='말을 누르면 갈 곳이 하나일 때 바로 뛰어넘고, 여러 곳이면 초록 칸이 보여요. 한 수 힌트와 끝까지 보기는 지금 둔 상태에서 이어져요'+(p.id==='diamond'||p.id==='sol'?' (이 판의 끝까지 보기는 처음부터 보여 줘요).':'.')+(A.opts.showSol?'':' 선생님이 열어 주면 쓸 수 있어요.');
+ playNote();
 }
 async function winPlay(f){
  const p=A.bank.play[G.opt.idx];setMsg('🎉 성공! 말 1개'+(G.B.kind==='tri'?' · 마지막 말은 '+(f+1)+'번 칸':'')+'. 다른 판에도 도전해 봐요.','ok');toast('성공!',G.hist.length+'수 만에 말 1개');
  A.doneP[p.id]=1;const b=document.querySelector('#plist .btn.on');if(b)b.classList.add('done');
  try{await call('api_play',A.name,A.token,{roundId:A.round,id:p.id,start:G.start,moves:movesOut()})}catch(e){}
 }
+function playNote(){const p=A.bank.play[G.opt.idx];$('gnote').textContent='말을 누르면 갈 곳이 하나일 때 바로 뛰어넘고, 여러 곳이면 초록 칸이 보여요. 한 수 힌트와 끝까지 보기는 지금 둔 상태에서 이어져요'+(p.id==='diamond'||p.id==='sol'?' (이 판의 끝까지 보기는 처음부터 보여 줘요).':'.')+(A.opts.hint&&A.opts.all?'':' 🔒 버튼은 선생님이 열어 주면 쓸 수 있어요.')}
 function stopDemo(){if(G&&G.demo){G.demo=false;if(G.demoT)clearTimeout(G.demoT)}}
 async function playHint(mode){
  if(!G||G.anim||A.busy)return;if(G.demo){stopDemo();setMsg('멈췄어요. 여기서부터 이어서 해 봐요.');drawCtrl();return}
- if(!A.opts.showSol){setMsg('선생님이 힌트와 풀이 보기를 열어 주면 쓸 수 있어요.','bad');return}
+ if(mode==='one'?!A.opts.hint:!A.opts.all){setMsg(mode==='one'?'선생님이 한 수 힌트를 열어 주면 쓸 수 있어요.':'선생님이 끝까지 보기를 열어 주면 볼 수 있어요.','bad');return}
  if(G.choosing){setMsg('먼저 비울 칸을 골라요.','bad');return}
  A.busy=true;let r;
  try{r=await call('api_solution',A.name,A.token,{roundId:A.round,id:A.bank.play[G.opt.idx].id,start:G.start,moves:movesOut(),mode})}

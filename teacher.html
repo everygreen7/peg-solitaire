@@ -168,8 +168,9 @@ td.n{font-variant-numeric:tabular-nums;text-align:right;font-weight:800}
    <div class="side">
     <div class="card"><h2>누적 순위 <span class="act">(실전 합계)</span></h2><div class="tot" id="tot"><p class="empty">아직 실전 기록이 없어요.</p></div></div>
     <div class="card hide-big"><h2>체험: 힌트·풀이 보기</h2>
-     <div class="sw"><span class="st" id="solSt">꺼짐</span><button class="btn" id="solBtn">켜기</button></div>
-     <p class="act" style="margin:8px 0 0;line-height:1.6">켜면 체험에서 학생이 쓸 수 있어요. [한 수 힌트]와 [끝까지 보기]는 학생이 둔 상태에서 이어져요(Diamond·Solitaire는 처음부터). 실전 문제와 같은 배치(십자·Plus·Pyramid·Fireplace)가 있으니 <b>실전이 끝난 뒤</b> 켜는 걸 권해요.</p>
+     <div class="sw"><span style="min-width:112px">💡 한 수 힌트</span><span class="st" id="hintSt">꺼짐</span><button class="btn" id="hintBtn">켜기</button></div>
+     <div class="sw" style="margin-top:8px"><span style="min-width:112px">▶ 끝까지 보기</span><span class="st" id="allSt">꺼짐</span><button class="btn" id="allBtn">켜기</button></div>
+     <p class="act" style="margin:8px 0 0;line-height:1.6">따로 켜고 끌 수 있어요. 체험 시간에는 한 수 힌트만 켜는 걸 권해요. [한 수 힌트]와 [끝까지 보기]는 학생이 둔 상태에서 이어져요(Diamond·Solitaire는 처음부터). 실전 문제와 같은 배치(십자·Plus·Pyramid·Fireplace)가 있으니 <b>실전이 끝난 뒤</b> 켜는 걸 권해요.</p>
     </div>
     <div class="card hide-big"><h2>도움말</h2>
      <p class="act" style="line-height:1.7;margin:0">· 학생 주소는 이 주소에서 <b>/teacher</b>(또는 <b>teacher.html</b>, <b>?view=teacher</b>)를 뺀 것이에요.<br>· 실전: 1문제 10점, 힌트 1번에 −3점(문제당 2번까지). 힌트는 다음 한 수를 두어 주고, 이미 막힌 상태면 필요한 만큼 무른 뒤 다음 수를 둬요. 힌트를 쓴 뒤 [처음부터]를 누르면 '힌트 받은 곳부터 / 맨 처음부터'를 골라요(감점은 그대로).<br>· 지도에서 작은 삼각형을 누르면 결과마다 찾은 학생과, 막혔을 때의 최선 기록이 보여요.<br>· 모든 기록은 구글 시트의 <b>기록</b>, <b>순위</b> 탭에 남아요.</p>
@@ -236,7 +237,8 @@ async function ctl(action,opt){$('msg').textContent='';
 $('startBtn').onclick=()=>ctl('start',{game:T.game,minutes:+$('mins').value});
 $('pauseBtn').onclick=()=>ctl(T.data&&T.data.state.status==='paused'?'resume':'pause');
 $('addBtn').onclick=()=>ctl('addtime',{minutes:1});
-$('solBtn').onclick=()=>ctl('opt',{showSol:!(T.data&&T.data.opts&&T.data.opts.showSol)});
+$('hintBtn').onclick=()=>ctl('opt',{hint:!(T.data&&T.data.opts&&T.data.opts.hint)});
+$('allBtn').onclick=()=>ctl('opt',{all:!(T.data&&T.data.opts&&T.data.opts.all)});
 function confirmIn(wrapId,text,yes){const w=$(wrapId),old=w.innerHTML;
  w.innerHTML=`<span class="confirm">${text} <button class="btn danger">예</button><button class="btn">아니요</button></span>`;
  const[b1,b2]=w.querySelectorAll('button');const back=()=>{w.innerHTML=old;bindDanger()};b1.onclick=()=>{back();yes()};b2.onclick=back}
@@ -266,7 +268,7 @@ function draw(d){
   $('stBadge').textContent=st;$('stBadge').className='badge '+(s.status==='running'?'':s.status);
   $('mdBadge').textContent=s.mode==='real'?'실전':'연습';$('mdBadge').className='badge '+(s.mode==='real'?'real':'prac');
   $('stLabel').textContent=GN[s.game]+' · '+s.roundId;$('pauseBtn').textContent=s.status==='paused'?'▶ 다시 시작':'⏸ 일시정지'}
- const on=!!(d.opts&&d.opts.showSol);$('solSt').textContent=on?'켜짐':'꺼짐';$('solSt').className='st'+(on?' on':'');$('solBtn').textContent=on?'끄기':'켜기';
+ [['hint','hintSt','hintBtn'],['all','allSt','allBtn']].forEach(([k,st,bt])=>{const on=!!(d.opts&&d.opts[k]);$(st).textContent=on?'켜짐':'꺼짐';$(st).className='st'+(on?' on':'');$(bt).textContent=on?'끄기':'켜기'});
  const sel=$('roundSel');const cur=T.view||(s.roundId||'');
  sel.innerHTML=(d.rounds.length?'':'<option value="">라운드 없음</option>')+d.rounds.slice().reverse().map(r=>`<option value="${r.id}"${r.id===cur?' selected':''}>${r.label}${r.id===s.roundId&&live?' (지금)':''}</option>`).join('');
  $('pMap').hidden=!d.map;if(d.map)drawMap(d.map);
