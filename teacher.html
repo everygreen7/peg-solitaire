@@ -75,6 +75,8 @@ td.n{font-variant-numeric:tabular-nums;text-align:right;font-weight:800}
 .mt:hover{background:#fffaf2}.mt.on{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-soft)}
 .mt .cap{font-size:12px;font-weight:800;color:var(--sub)}
 .mt .cap b{color:var(--peg)}
+.mt .cap.st{font-size:11.5px;line-height:1.3;min-height:1.3em}
+.fv .mt .cap.st{font-size:16px}
 .mt.new{animation:fvnew 1.6s ease-out}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--sub);font-weight:700;align-items:center}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:4px}
@@ -129,7 +131,7 @@ td.n{font-variant-numeric:tabular-nums;text-align:right;font-weight:800}
      <h2>새 활동 시작</h2>
      <div class="games" id="games">
       <button class="g on" data-g="play"><b>체험</b><span>판 고르기 · 자리값 · 풀이 보기 · 연습</span></button>
-      <button class="g" data-g="map"><b>마지막 말 지도</b><span>15칸 판 결과 모으기 · 연습(협동)</span></button>
+      <button class="g" data-g="map"><b>마지막 말 지도</b><span>10칸 판 결과·최선 기록 모으기 · 연습(협동)</span></button>
       <button class="g" data-g="real"><b>실전 대회</b><span>모두 같은 8문제 · 점수와 순위</span></button>
      </div>
      <div class="row"><span class="lab">모드</span><span class="badge prac" id="modeBadge">연습</span><span class="act" id="modeNote"></span></div>
@@ -153,7 +155,7 @@ td.n{font-variant-numeric:tabular-nums;text-align:right;font-weight:800}
     <div class="card" id="pMap" hidden>
      <div class="row" style="margin:0 0 10px;justify-content:space-between"><h2 style="margin:0">마지막 말 지도 <span id="mCount" style="color:var(--acc)"></span></h2>
       <span class="row" style="margin:0;gap:10px"><label class="small hide-big"><input type="checkbox" id="showTruth"> 아직 못 찾은 칸 보이기</label><button class="btn pri fbig" id="fvOpen">⛶ 크게 띄우기</button></span></div>
-     <div class="legend"><span><i style="background:#fff;border:2.5px solid var(--acc)"></i>처음 비운 칸</span><span><i style="background:var(--peg)"></i>마지막 말이 남은 칸</span><span id="lgTruth" hidden><i style="background:#fff;border:2px dashed var(--peg)"></i>아직 못 찾은 칸</span></div>
+     <div class="legend"><span><i style="background:#fff;border:2.5px solid var(--acc)"></i>처음 비운 칸</span><span><i style="background:var(--peg)"></i>마지막 말이 남은 칸</span><span><b style="color:var(--acc)">최선 n개</b> = 1개로 못 끝냈을 때 반에서 가장 적게 남긴 수</span><span id="lgTruth" hidden><i style="background:#fff;border:2px dashed var(--peg)"></i>아직 못 찾은 칸</span></div>
      <div class="mp" id="mMap" style="margin-top:10px"></div>
      <div class="detail" id="mDetail" hidden></div>
     </div>
@@ -165,12 +167,12 @@ td.n{font-variant-numeric:tabular-nums;text-align:right;font-weight:800}
    </div>
    <div class="side">
     <div class="card"><h2>누적 순위 <span class="act">(실전 합계)</span></h2><div class="tot" id="tot"><p class="empty">아직 실전 기록이 없어요.</p></div></div>
-    <div class="card hide-big"><h2>체험: 풀이 보기</h2>
+    <div class="card hide-big"><h2>체험: 힌트·풀이 보기</h2>
      <div class="sw"><span class="st" id="solSt">꺼짐</span><button class="btn" id="solBtn">켜기</button></div>
-     <p class="act" style="margin:8px 0 0;line-height:1.6">켜면 체험에서 학생이 [풀이 보기]로 한 수씩 풀이를 볼 수 있어요. 실전 문제와 같은 배치(십자·Plus·Pyramid·Fireplace)가 있으니 <b>실전이 끝난 뒤</b> 켜는 걸 권해요.</p>
+     <p class="act" style="margin:8px 0 0;line-height:1.6">켜면 체험에서 학생이 쓸 수 있어요. [한 수 힌트]와 [끝까지 보기]는 학생이 둔 상태에서 이어져요(Diamond·Solitaire는 처음부터). 실전 문제와 같은 배치(십자·Plus·Pyramid·Fireplace)가 있으니 <b>실전이 끝난 뒤</b> 켜는 걸 권해요.</p>
     </div>
     <div class="card hide-big"><h2>도움말</h2>
-     <p class="act" style="line-height:1.7;margin:0">· 학생 주소는 이 주소에서 <b>/teacher</b>(또는 <b>teacher.html</b>, <b>?view=teacher</b>)를 뺀 것이에요.<br>· 실전: 1문제 10점, 힌트 1번에 −3점(문제당 2번까지). 힌트는 다음 한 수를 두어 주고, 이미 막힌 상태면 필요한 만큼 무른 뒤 다음 수를 둬요.<br>· 지도에서 작은 삼각형을 누르면 결과마다 찾은 학생이 모두 보여요.<br>· 모든 기록은 구글 시트의 <b>기록</b>, <b>순위</b> 탭에 남아요.</p>
+     <p class="act" style="line-height:1.7;margin:0">· 학생 주소는 이 주소에서 <b>/teacher</b>(또는 <b>teacher.html</b>, <b>?view=teacher</b>)를 뺀 것이에요.<br>· 실전: 1문제 10점, 힌트 1번에 −3점(문제당 2번까지). 힌트는 다음 한 수를 두어 주고, 이미 막힌 상태면 필요한 만큼 무른 뒤 다음 수를 둬요. 힌트를 쓴 뒤 [처음부터]를 누르면 '힌트 받은 곳부터 / 맨 처음부터'를 골라요(감점은 그대로).<br>· 지도에서 작은 삼각형을 누르면 결과마다 찾은 학생과, 막혔을 때의 최선 기록이 보여요.<br>· 모든 기록은 구글 시트의 <b>기록</b>, <b>순위</b> 탭에 남아요.</p>
      <div class="row"><span id="resetWrap"><button class="btn danger" id="resetBtn">모두 초기화 (새 반 시작)</button></span></div>
     </div>
    </div>
@@ -209,7 +211,7 @@ function call(fn){const args=[].slice.call(arguments,1);
 const $=id=>document.getElementById(id);
 const errText=e=>String((e&&e.message)||e).replace(/^(Error|Exception):\s*/,'');
 const GN={play:'체험',map:'마지막 말 지도',real:'실전 대회'};
-const GNOTE={play:'학생이 판을 골라 자유롭게 · 점수 없음',map:'15칸 판에서 (비운 칸 → 마지막 칸) 결과를 반 전체가 모아요',real:'모두 같은 8문제 · 도착한 번호까지만 열림 · 점수와 순위 기록'};
+const GNOTE={play:'학생이 판을 골라 자유롭게 · 점수 없음',map:'10칸 판에서 (비운 칸 → 마지막 칸) 결과와, 1개로 못 끝낸 칸의 최선 기록을 반 전체가 모아요',real:'모두 같은 8문제 · 도착한 번호까지만 열림 · 점수와 순위 기록'};
 const GMIN={play:10,map:12,real:15};
 const T={pw:'',game:'play',view:'',data:null,offset:0,timer:null,open:null};
 try{T.pw=sessionStorage.getItem('peg_pw')||''}catch(e){}
@@ -271,28 +273,37 @@ function draw(d){
  drawTable(d,d.round);drawTot(d);drawFV(d);
 }
 
-/* ═════ 마지막 말 지도 ═════ */
-const N15=15,ROWS=5;
-const cellXY=(i,s)=>{let r=0,k=i;while(k>r){k-=r+1;r++}return[(k-r/2+(ROWS-1)/2)*s+s/2,r*s*0.88+s/2]};
-function mini(e,found,truth,s){
- const w=ROWS*s,h=((ROWS-1)*0.88+1)*s;let o=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true">`;
- for(let i=1;i<=N15;i++){const[x,y]=cellXY(i-1,s),isE=i===e,isF=found.has(i),isT=!isF&&truth&&truth.indexOf(i)>=0;
+/* ═════ 마지막 말 지도 (10칸) ═════
+   작은 삼각형 = 그 칸을 비우고 시작한 결과. ● 마지막 말이 남은 칸, ○ 처음 비운 칸, 점선 = 아직 못 찾은 칸(교사만) */
+const cellXY=(i,s,R)=>{let r=0,k=i;while(k>r){k-=r+1;r++}return[(k-r/2+(R-1)/2)*s+s/2,r*s*0.88+s/2]};
+function mini(e,found,truth,s,R){
+ const N=R*(R+1)/2,w=R*s,h=((R-1)*0.88+1)*s;let o=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true">`;
+ for(let i=1;i<=N;i++){const[x,y]=cellXY(i-1,s,R),isE=i===e,isF=found.has(i),isT=!isF&&truth&&truth.indexOf(i)>=0;
   o+=`<circle cx="${x}" cy="${y}" r="${s*0.38}" fill="${isF?'#7c4ddb':isE?'#fff':'#ebe5da'}" stroke="${isE?'#d6336c':isF?'#4b21a8':isT?'#7c4ddb':'#d5cdc0'}" stroke-width="${isE?s*0.13:isT?s*0.09:1}"${isT?` stroke-dasharray="${s*0.14} ${s*0.1}"`:''}/>`}
  return o+'</svg>'}
 function mapBy(m){const by={};m.pairs.forEach(p=>{(by[p.e]=by[p.e]||{})[p.f]=p});return by}
+function bestBy(m){const o={};(m.bests||[]).forEach(b=>o[b.e]=b);return o}
+const NB=m=>m.n*(m.n+1)/2;
+const bestTxt=(m,left)=>left>=NB(m)-1?'못 움직임':'최선 '+left+'개';
+function sig(m,e){const f=mapBy(m)[e]||{},b=bestBy(m)[e];return Object.keys(f).length+'|'+(b?b.left:'')}
 function mapHtml(m,s,showTruth,selE,known){
- const by=mapBy(m);let h='',i=1;
- for(let r=0;r<ROWS;r++){h+='<div class="mr">';for(let c=0;c<=r;c++,i++){const f=by[i]||{},fs=new Set(Object.keys(f).map(Number));
-  const isNew=known&&known.has(i)&&known.get(i)<fs.size;
-  h+=`<button class="mt${selE===i?' on':''}${isNew?' new':''}" data-e="${i}">${mini(i,fs,showTruth?m.truth[i]:null,s)}<span class="cap">${i}번 비움${fs.size?` · <b>${fs.size}가지</b>`:''}</span></button>`}h+='</div>'}
+ const by=mapBy(m),bb=bestBy(m),R=m.n;let h='',i=1;
+ for(let r=0;r<R;r++){h+='<div class="mr">';for(let c=0;c<=r;c++,i++){const f=by[i]||{},fs=new Set(Object.keys(f).map(Number)),b=bb[i],tr=m.truth[i];
+  const isNew=known&&known.has(i)&&known.get(i)!==sig(m,i);
+  const imp=showTruth&&!tr.f.length?' <span style="color:var(--mute);white-space:nowrap">(1개 불가)</span>':'';
+  const st=fs.size?`<b>${fs.size}가지</b>`:b?`<b style="color:var(--acc)">${bestTxt(m,b.left)}</b>${imp}`:(imp?imp.trim():'&nbsp;');
+  h+=`<button class="mt${selE===i?' on':''}${isNew?' new':''}" data-e="${i}" style="width:${R*s+20}px">${mini(i,fs,showTruth?tr.f:null,s,R)}<span class="cap">${i}번 비움</span><span class="cap st">${st}</span></button>`}h+='</div>'}
  return h}
 function detailHtml(m,e){
- const f=mapBy(m)[e]||{};const ks=Object.keys(f).map(Number).sort((a,b)=>a-b);
- if(!ks.length)return `<h3>${e}번을 비우고 시작한 결과</h3><p class="small">아직 말 1개로 끝낸 학생이 없어요.</p>`;
- return `<h3>${e}번을 비우고 시작한 결과 ${ks.length}가지</h3>`+ks.map(k=>{const p=f[k];return `<div class="fr"><span class="to">→ ${k}번</span><span class="small">${p.who.length}명</span><span class="ws">${p.who.map((w,j)=>`<span class="${j?'':'first'}">${j?'':'🥇 '}${esc(w.name)}</span>`).join('')}</span></div>`}).join('')}
+ const f=mapBy(m)[e]||{},b=bestBy(m)[e];const ks=Object.keys(f).map(Number).sort((a,c)=>a-c);
+ let h=`<h3>${e}번을 비우고 시작한 결과${ks.length?' '+ks.length+'가지':''}</h3>`;
+ if(ks.length)h+=ks.map(k=>{const p=f[k];return `<div class="fr"><span class="to">→ ${k}번</span><span class="small">${p.who.length}명</span><span class="ws">${p.who.map((w,j)=>`<span class="${j?'':'first'}">${j?'':'🥇 '}${esc(w.name)}</span>`).join('')}</span></div>`}).join('');
+ else h+='<p class="small">아직 말 1개로 끝낸 학생이 없어요.</p>';
+ if(b)h+=`<div class="fr"><span class="to" style="color:var(--acc)">막혔을 때</span><span class="small">가장 적게 ${b.left}개</span><span class="ws">${b.who.map((w,j)=>`<span class="${j?'':'first'}">${j?'':'🥇 '}${esc(w.name)} ${w.left}개</span>`).join('')}</span></div>`;
+ return h}
 function drawMap(m){
- $('mCount').textContent=m.pairs.length+'가지';const tr=$('showTruth').checked;$('lgTruth').hidden=!tr;
- const s=document.body.classList.contains('big')?22:16;
+ $('mCount').textContent=m.pairs.length+'가지'+(m.bests&&m.bests.length?' · 최선 기록 '+m.bests.length+'칸':'');const tr=$('showTruth').checked;$('lgTruth').hidden=!tr;
+ const s=document.body.classList.contains('big')?26:20;
  $('mMap').innerHTML=mapHtml(m,s,tr,T.open,null);
  $('mMap').querySelectorAll('.mt').forEach(b=>b.onclick=()=>{const e=+b.dataset.e;T.open=T.open===e?null:e;drawMap(T.data.map)});
  $('mDetail').hidden=!T.open;if(T.open)$('mDetail').innerHTML=detailHtml(m,T.open);
@@ -301,7 +312,7 @@ function drawTable(d,rd){
  if($('tbl').querySelector('.confirm'))return;
  const g=rd?rd.game:null,real=g==='real';
  $('tblTitle').textContent=rd?(real?'실시간 순위':'학생 현황')+' · '+rd.label:'학생 현황';
- const cols=real?['순위','이름','점수','성공','도착','힌트','지금 하는 일','']:g==='map'?['','이름','찾은 결과','반에서 처음','지금 하는 일','']:['','이름','성공한 판','지금 하는 일',''];
+ const cols=real?['순위','이름','점수','성공','도착','힌트','지금 하는 일','']:g==='map'?['','이름','찾은 결과','반에서 처음','최선 기록','지금 하는 일','']:['','이름','성공한 판','지금 하는 일',''];
  let h='<tr>'+cols.map(c=>`<th>${c}</th>`).join('')+'</tr>';
  if(!d.rows.length)h+=`<tr><td colspan="${cols.length}" class="empty">아직 입장한 학생이 없어요.</td></tr>`;
  let rank=0,prev=null;
@@ -310,7 +321,7 @@ function drawTable(d,rd){
   const nm=`<td><span class="dot${x.online?' on':''}"></span><span class="nm">${esc(x.name)}</span></td>`;
   const kick=`<td class="hide-big"><button class="x" title="내보내기" data-k="${esc(x.name)}">✕</button></td>`;
   if(real)h+=`<tr><td><span class="rk ${x.score>0&&rank<=3?'r'+rank:''}">${rank}</span></td>${nm}<td class="n" style="color:var(--acc);font-size:18px">${x.score}</td><td class="n">${x.solved}/${d.puzzleCount}</td><td class="n">${(x.reach||0)+1}번</td><td class="n">${x.hints||0}</td>${act}${kick}</tr>`;
-  else if(g==='map')h+=`<tr><td></td>${nm}<td class="n">${x.found}</td><td class="n">${x.first}</td>${act}${kick}</tr>`;
+  else if(g==='map')h+=`<tr><td></td>${nm}<td class="n">${x.found}</td><td class="n">${x.first}</td><td class="n">${x.stuck||0}칸</td>${act}${kick}</tr>`;
   else h+=`<tr><td></td>${nm}<td class="n">${x.solved}</td>${act}${kick}</tr>`});
  $('tbl').innerHTML=h;
  $('tbl').querySelectorAll('.x').forEach(b=>b.onclick=()=>{const n=b.dataset.k;b.outerHTML=`<span class="confirm">내보낼까요? <button class="btn danger" style="padding:4px 8px">예</button></span>`;
@@ -332,12 +343,12 @@ function drawFV(d){
  if(!FV.open)return;const m=d.map;
  if(!m){$('fvMap').innerHTML='<p class="empty" style="font-size:28px">지금은 마지막 말 지도 활동이 아니에요.</p>';$('fvDetail').innerHTML='';$('fvCount').textContent='';return}
  $('fvCount').textContent=m.pairs.length+'가지';
- const wide=innerWidth>1000,availW=(wide?innerWidth-68-422:innerWidth-68),availH=innerHeight-120;
- const s=Math.max(14,Math.min(34,Math.floor(((availW-4*14)/5-24)/5),Math.floor((availH-5*(40+12))/(5*4.52))));
- const by=mapBy(m),cnt=new Map();for(let i=1;i<=N15;i++)cnt.set(i,Object.keys(by[i]||{}).length);
+ const R=m.n,wide=innerWidth>1000,availW=(wide?innerWidth-68-422:innerWidth-68),availH=innerHeight-120;
+ const s=Math.max(14,Math.min(46,Math.floor(((availW-(R-1)*14)/R-24)/R),Math.floor((availH-R*(70+12))/(R*((R-1)*0.88+1)))));
+ const cnt=new Map();for(let i=1;i<=NB(m);i++)cnt.set(i,sig(m,i));
  $('fvMap').innerHTML=mapHtml(m,s,$('fvTruth').checked,FV.sel,FV.known);FV.known=cnt;
  $('fvMap').querySelectorAll('.mt').forEach(b=>b.onclick=()=>{const e=+b.dataset.e;FV.sel=FV.sel===e?null:e;drawFV(T.data)});
- $('fvDetail').innerHTML=FV.sel?detailHtml(m,FV.sel):'<h3>누가 찾았을까요?</h3><p class="small" style="font-size:17px;line-height:1.6">작은 삼각형을 누르면 그 칸을 비우고 시작해서 얻은 결과와, 찾은 친구들이 보여요.<br>🥇 = 처음 찾은 친구</p>';
+ $('fvDetail').innerHTML=FV.sel?detailHtml(m,FV.sel):'<h3>누가 찾았을까요?</h3><p class="small" style="font-size:17px;line-height:1.6">작은 삼각형을 누르면 그 칸을 비우고 시작해서 얻은 결과와 찾은 친구들이 보여요. 1개로 끝내지 못한 칸은 <b>막혔을 때 가장 적게 남긴 기록</b>이 보여요.<br>🥇 = 처음 찾은 친구</p>';
 }
 setInterval(()=>{const d=T.data;if(!d)return;const s=d.state;
  if(s.status==='running'){const left=s.endAt-(Date.now()+T.offset);$('clock').textContent=fmt(left);$('clock').classList.toggle('low',left<30000);if(left<=0&&!T.z){T.z=1;setTimeout(()=>{T.z=0;refresh()},1200)}}
